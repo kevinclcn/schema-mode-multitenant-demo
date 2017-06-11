@@ -1,0 +1,118 @@
+---
+grails:
+    profile: rest-api
+    codegen:
+        defaultPackage: books
+    spring:
+        transactionManagement:
+            proxies: false
+    gorm:
+        # Whether to autowire entities. 
+        # Disabled by default for performance reasons.
+        autowire: false         
+        reactor:
+            # Whether to translate GORM events into Reactor events
+            # Disabled by default for performance reasons
+            events: false
+info:
+    app:
+        name: '@info.app.name@'
+        version: '@info.app.version@'
+        grailsVersion: '@info.app.grailsVersion@'
+spring:
+    main:
+        banner-mode: "off"
+    groovy:
+        template:
+            check-template-location: false
+
+# Spring Actuator Endpoints are Disabled by Default
+endpoints:
+    enabled: false
+    jmx:
+        enabled: true
+
+---
+grails:
+    mime:
+        disable:
+            accept:
+                header:
+                    userAgents:
+                        - Gecko
+                        - WebKit
+                        - Presto
+                        - Trident
+        types:
+            json:
+              - application/json
+              - text/json   
+            hal:
+              - application/hal+json
+              - application/hal+xml  
+            xml:
+              - text/xml
+              - application/xml                                 
+            atom: application/atom+xml
+            css: text/css
+            csv: text/csv
+            js: text/javascript
+            rss: application/rss+xml
+            text: text/plain
+            all: '*/*'            
+    urlmapping:
+        cache:
+            maxsize: 1000
+    controllers:
+        defaultScope: singleton
+    converters:
+        encoding: UTF-8
+
+---
+grails:
+    gorm:
+        multiTenancy:
+            mode: SCHEMA
+            tenantResolverClass: books.MySchemaResolver
+
+hibernate:
+    cache:
+        queries: false
+        use_second_level_cache: true
+        use_query_cache: false
+        region.factory_class: org.hibernate.cache.ehcache.SingletonEhCacheRegionFactory
+
+dataSource:
+    driverClassName: com.mysql.jdbc.Driver
+    dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    schemaHandler: books.MySchemaHandler
+    pooled: true
+    jmxExport: true
+    properties:
+        jmxEnabled: true
+        initialSize: 10
+        maxActive: 100
+        minIdle: 10
+        maxIdle: 50
+        maxWait: 10000
+        maxAge: 600000
+        timeBetweenEvictionRunsMillis: 5000
+        minEvictableIdleTimeMillis: 60000
+        validationQuery: SELECT 1
+        validationQueryTimeout: 3
+        validationInterval: 15000
+        testOnBorrow: true
+        testWhileIdle: true
+        testOnReturn: false
+        jdbcInterceptors: ConnectionState
+        defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
+
+environments:
+    development:
+        dataSource:
+            username: root
+            password: root
+            dbCreate: validate
+            url: jdbc:mysql://localhost:3306/tenant1?useUnicode=yes&characterEncoding=UTF-8&useLegacyDatetimeCode=false&serverTimezone=UTC&zeroDateTimeBehavior=convertToNull
+            logSql: true
+            formatSql: true
